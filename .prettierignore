@@ -1,0 +1,22 @@
+*.env
+.env.local
+node_modules/
+.env
+.env.* 
+# Ignore artifacts:
+build
+coverage
+
+# Ignore all HTML files:
+**/*.html
+**/.git
+**/.svn
+**/.hg
+**/node_modules
+**/.git
+**/.svn
+**/.hg
+
+/.vscode
+.DS_Store
+./dist
