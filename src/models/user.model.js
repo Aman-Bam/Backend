@@ -27,7 +27,7 @@ const UserSchema = new Schema(
         },
         avatar: {
             type: String,
-            require: true,
+            required: true,
         },
         coverImage: {
             type: String,
@@ -49,41 +49,42 @@ const UserSchema = new Schema(
     { timestamps: true }
 );
 
-UserSchema.pre("save", async function (next) { 
-    if(this.isModified("password")) return next();
+UserSchema.pre("save", async function () {
+    if (!this.isModified("password")) return;
 
-    this.password = bcrypt.hash(this.password, 10)
-    next()
-})
+    this.password = await bcrypt.hash(this.password, 10);
+});
+
 
 UserSchema.methods.isPasswordCorrect = async function (password) {
-    return await bcrypt.compare(password, this.password)    
+    return await bcrypt.compare(password, this.password)
 }
 
-UserSchema.methods.generateAccessToken = function(){
-   return jwt.sign(
+UserSchema.methods.generateAccessToken = function () {
+    return jwt.sign(
         {
             _id: this._id,
             email: this.email,
             username: this.username,
-            fullname : this.fullname
+            fullname: this.fullname
         },
         process.env.ACCESS_TOKEN_SECRECT,
         {
-            expiresIn : process.env.ACCESS_TOKEN_EXPIRY
+            expiresIn: process.env.ACCESS_TOKEN_EXPIRY
         }
     )
 }
-UserSchema.methods.generateRefreshToken = function(){
+UserSchema.methods.generateRefreshToken = function () {
     return jwt.sign(
         {
             _id: this._id,
         },
         process.env.REFRESH_TOKEN_SECRECT,
         {
-            expiresIn : process.env.REFRESH_TOKEN_EXPIRY
+            expiresIn: process.env.REFRESH_TOKEN_EXPIRY
         }
     )
 }
 export const User = mongoose.model("User", UserSchema);
- c  
+
+
